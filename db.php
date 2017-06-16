@@ -2,7 +2,7 @@
 
 DEFINE("DB_USER", "1543834_login");
 DEFINE("DB_PASSWORD", "LITTLEfriend9895");
-DEFINE("DB_HOST", "fdb3.freehostingeu.com");
+DEFINE("DB_HOST", "pdb18.freehostingeu.com");
 DEFINE("DB_NAME", "1543834_login");
 
 $db = new DB();
