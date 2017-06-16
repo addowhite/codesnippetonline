@@ -78,7 +78,7 @@ class DB {
       if (mysqli_num_rows($response) == 1) {
         $row = mysqli_fetch_array($response);
 
-        $query = "UPDATE users SET verification_code=NULL WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
+        $query = "UPDATE users SET verification_code=NULL, status='active' WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
         mysqli_query($this->connection, $query);
 
         $_SESSION["username"] = $username;
@@ -103,7 +103,7 @@ class DB {
       // Values are stored escaped in the database
       // Must double-escape for query to return a match with the escaped value
       $email_address = mysqli_escape_string($this->connection, mysqli_escape_string($this->connection, $email_address));
-      $query = "SELECT username, password FROM users WHERE email='{$email_address}'";
+      $query = "SELECT status, username, password FROM users WHERE email='{$email_address}'";
 
       $response = mysqli_query($this->connection, $query);
       if ($response) {
@@ -112,9 +112,14 @@ class DB {
 
           require("../PBKDF2/password_hash.php");
           if (PasswordStorage::verify_password($password, $row["password"])) {
-            $_SESSION["username"] = $row["username"];
-            $_SESSION["email_address"] = $email_address;
-            $success = true;
+            if ($row["status"] == "unverified") {
+              $_SESSION["login_attempt"] = true;
+              Infra::redirect("pages/email_not_verified/email_not_verified.php");
+            } else {
+              $_SESSION["username"] = $row["username"];
+              $_SESSION["email_address"] = $email_address;
+              $success = true;
+            }
           }
         }
       } else {
