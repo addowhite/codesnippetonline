@@ -1,0 +1,169 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #202020;
+  overflow: hidden;
+}
+
+* {
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 12pt;
+  color: white;
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  font-size: 16pt;
+}
+
+.scrollable-content-pane {
+  overflow-y: auto;
+  width: 100%;
+  height: Calc(100% - 50px);
+}
+
+.page-header h1 {
+  display: inline;
+  margin-right: 1em;
+  vertical-align: middle;
+}
+
+input {
+  display: block;
+}
+
+.page {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  background-color: #303030;
+}
+
+.page.page-header {
+  padding: 0;
+  border-top: 4px solid #6600ff;
+}
+
+.header-container {
+  height: 50px;
+}
+
+.header-container, .footer-container {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-container {
+  background-color: #121212;
+  padding-left: 1em;
+  padding-right: 1em;
+  max-width: Calc(960px - 2em);
+}
+
+.page.page-footer {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  width: 100%;
+  background-color: #121212;
+}
+
+.footer-container {
+  font-size: 10pt !important;
+  color: #808080;
+}
+
+.page.page-content {
+  max-width: 960px;
+  max-width: Calc(960px - 2em);
+  min-height: 100%;
+  min-height: Calc(100% - 82px);
+  padding: 1em;
+  width: Calc(100% - 2em);
+  border-top: solid 1px #383838;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  /*float: right;*/
+}
+
+.button-wrapper {
+  display: inline-block;
+  height: 100%;
+}
+
+.button {
+  cursor: pointer;
+  padding: .5em;
+  background-color: #303030;
+  border: none;
+}
+
+.button:hover {
+  background-color: #383838;
+}
+
+.page-header .button {
+  padding: 1em;
+}
+
+.page-header .button-container {
+  height: 49px;
+}
+
+.title-container {
+  display: inline-block;
+  font-size: 18pt;
+  height: 100%;
+  padding-top: 9px;
+  padding-left: .5em;
+}
+
+.button-container {
+  float: right;
+  height: 34px;
+  border-bottom: solid 1px #383838;
+  border-left: solid 1px #383838;
+  border-right: solid 1px #383838;
+}
+
+form input[type="text"], input[type="password"] {
+  width: 100%;
+  width: Calc(100% - 19px);
+  padding: .3em .6em;
+  border: none;
+  border-top: solid 1px #6600ff;
+  background-color: #383838;
+}
+
+form input[type="text"].top, input[type="password"].top {
+  border: none;
+}
+
+input[type="submit"] {
+  display: inline-block;
+}
+
+textarea {
+  border: none;
+  background-color: #383838;
+  padding: .5em;
+}
+
+select {
+  font-size: 10pt;
+  background-color: #383838;
+  border: none;
+  padding: 6px .6em;
+}
+
+option {
+  font-size: 10pt;
+}

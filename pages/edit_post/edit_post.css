@@ -1,0 +1,22 @@
+textarea {
+  max-width: Calc(100% - 1em);
+  min-width: Calc(100% - 1em);
+  height: 300px;
+  font-family: monospace;
+  font-size: 10pt;
+  border-top: solid 1px #6600ff !important;
+  position: relative;
+  z-index: 1;
+}
+
+.post_title {
+  display: inline-block;
+  width: Calc(100% - 120px) !important;
+}
+
+.language-dropdown {
+  width: 100px;
+  top: 1px;
+  position: relative;
+  z-index: 0;
+}
