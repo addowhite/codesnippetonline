@@ -29,8 +29,7 @@ class Infra {
   }
 
   public static function mail($address, $subject, $content) {
-    $headers = "From: no-reply@codesnippetonline.eu.pn\r\n" .
-               "Reply-To: \r\n" .
+    $headers = "Reply-To: \r\n" .
                "X-Mailer: PHP/" . phpversion() . "\r\n" .
                "MIME-Version: 1.0\r\n" .
                "Content-Type: text/html; charset=ISO-8859-1\r\n";
