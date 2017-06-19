@@ -6,7 +6,7 @@ require "template.php";
 class Infra {
 
   public static function check_user_logged_in() {
-    return isset($_SESSION["username"]) && isset($_SESSION["email_address"]);
+    return isset($_SESSION["user_id"]) && isset($_SESSION["username"]) && isset($_SESSION["email_address"]);
   }
 
   public static function get_base_url() {

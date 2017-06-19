@@ -71,7 +71,7 @@ class DB {
     // Values are stored escaped in the database
     // Must double-escape for query to return a match with the escaped value
     $username = mysqli_escape_string($this->connection, mysqli_escape_string($this->connection, $username));
-    $query = "SELECT email FROM users WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
+    $query = "SELECT user_id, email FROM users WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
 
     $response = mysqli_query($this->connection, $query);
     if ($response) {
@@ -81,6 +81,7 @@ class DB {
         $query = "UPDATE users SET verification_code=NULL, status='active' WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
         mysqli_query($this->connection, $query);
 
+        $_SESSION["user_id"] = $row["user_id"];
         $_SESSION["username"] = $username;
         $_SESSION["email_address"] = $row["email"];
         $success = true;
@@ -103,7 +104,7 @@ class DB {
       // Values are stored escaped in the database
       // Must double-escape for query to return a match with the escaped value
       $email_address = mysqli_escape_string($this->connection, mysqli_escape_string($this->connection, $email_address));
-      $query = "SELECT status, username, password FROM users WHERE email='{$email_address}'";
+      $query = "SELECT status, user_id, username, password FROM users WHERE email='{$email_address}'";
 
       $response = mysqli_query($this->connection, $query);
       if ($response) {
@@ -116,6 +117,7 @@ class DB {
               $_SESSION["login_attempt"] = true;
               Infra::redirect("pages/email_not_verified/email_not_verified.php");
             } else {
+              $_SESSION["user_id"] = $row["user_id"];
               $_SESSION["username"] = $row["username"];
               $_SESSION["email_address"] = $email_address;
               $success = true;
@@ -128,6 +130,22 @@ class DB {
       mysqli_close($this->connection);
     }
     return $success;
+  }
+
+  public function call($procedure_name, $params) {
+    $query_string = "CALL {$procedure_name}(";
+    foreach ($params as $key => $value) $query_string .= "'{$value}',";
+
+    // Replace the last comma with a closing bracket
+    $query_string = substr_replace($query_string, ")", strlen($query_string) - 1);
+
+    // Run the query and return the result(s)
+    $response = mysqli_query($this->connection, $query_string);
+    if ($response == TRUE || $response == FALSE) {
+      return $response;
+    } else if (mysqli_num_rows($response) > 0) {
+      return mysqli_fetch_array($response);
+    }
   }
 }
 
