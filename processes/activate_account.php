@@ -1,7 +1,8 @@
 <?php
 require "../infra.php";
 
-if (isset($_GET["user"])
+if (!Infra::check_user_logged_in()
+  && isset($_GET["user"])
   && isset($_GET["code"])
   && $db->activate_account($_GET["user"], $_GET["code"])) {
 

@@ -15,6 +15,10 @@ class DB {
       OR die("Failed to connect to MySQL: " . mysqli_connect_error());
   }
 
+  public function __destruct() {
+    mysqli_close($this->connection);
+  }
+
   public function create_account($email_address, $username, $password, $password_confirm) {
     $result = "An error occurred when creating the account. Account could not be created.";
 
@@ -34,32 +38,50 @@ class DB {
 
       $email_address = mysqli_escape_string($this->connection, $email_address);
       $username = mysqli_escape_string($this->connection, $username);
-      $verification_code = Infra::generate_random_code(20);
 
-      $query = "INSERT INTO users (email, username, password, verification_code) VALUES(?, ?, ?, ?)";
-      $query_stmt = mysqli_prepare($this->connection, $query);
-      mysqli_stmt_bind_param($query_stmt, "ssss", $email_address, $username, $password_hash, $verification_code);
+      // Execute the SQL stored proc to check the username and email aren't already in use
+      $check_info_result = $this->call("check_user_account_info_valid", array(
+        "email_address" => "{$email_address}",
+        "username"      => "{$username}"
+      ));
 
-      mysqli_stmt_execute($query_stmt);
+      if (is_array($check_info_result)) {
+        $errors = "";
 
-      if (mysqli_stmt_affected_rows($query_stmt) == 1) {
-        $result = "success";
+        // If the username is already taken
+        if (isset($check_info_result["username"]) && $check_info_result["username"] !== NULL) {
+          $errors .= "Username \"{$username}\" is unavailable.<br>";
+        }
 
-        $escaped_username = rawurlencode($username);
-        Infra::mail(
-          $email_address,
-          "Account activation",
-          template("templates/email_account_activation.php", array(
-            "username" => "{$username}",
-            "activation_link" => "http://" . Infra::get_base_url() . "/processes/activate_account.php?user={$escaped_username}&code={$verification_code}"
-          ))
-        );
-      } else {
-        return mysqli_error($this->connection);
+        // If the email address is already taken
+        if (isset($check_info_result["email"]) && $check_info_result["email"] !== NULL) {
+          $errors .= "There is already a user registered with the email address \"{$email_address}\".<br>";
+        }
+
+        // If any errors occured, return them
+        if ($errors !== "") return $errors;
+
+        // Generate a random code for the account verification email
+        $verification_code = Infra::generate_random_code(20);
+
+        // Execute the stored proc to insert a new user
+        $create_user_result = $this->call("create_user", array(
+          "email_address"     => "{$email_address}",
+          "username"          => "{$username}",
+          "password"          => "{$password_hash}",
+          "verification_code" => "{$verification_code}"
+        ));
+
+        if (is_array($create_user_result) && $create_user_result["row_count"] == "1") {
+          $result = "success";
+          Infra::send_account_verification_email($username, $email_address, $verification_code);
+        } else {
+          return mysqli_error($this->connection);
+        }
+
+      } else if (is_string($check_info_result) && substr($check_info_result, 0, 5) == "ERROR") {
+        $result = $check_info_result;
       }
-
-      mysqli_stmt_close($query_stmt);
-      mysqli_close($this->connection);
     }
 
     return $result;
@@ -68,28 +90,18 @@ class DB {
   public function activate_account($username, $verification_code) {
     $success = false;
 
-    // Values are stored escaped in the database
-    // Must double-escape for query to return a match with the escaped value
-    $username = mysqli_escape_string($this->connection, mysqli_escape_string($this->connection, $username));
-    $query = "SELECT user_id, email FROM users WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
+    // Call the stored procedure to activate the account
+    $result = $this->call("activate_account", array("username" => "{$username}", "verification_code" => "{$verification_code}"));
 
-    $response = mysqli_query($this->connection, $query);
-    if ($response) {
-      if (mysqli_num_rows($response) == 1) {
-        $row = mysqli_fetch_array($response);
+    // If the verification code was valid
+    if (is_array($result) && !empty($result)) {
+      // Sign the user in
+      $_SESSION["user_id"] = $result["user_id"];
+      $_SESSION["username"] = $username;
+      $_SESSION["email_address"] = $result["email_address"];
 
-        $query = "UPDATE users SET verification_code=NULL, status='active' WHERE username='{$username}' AND verification_code='{$verification_code}' LIMIT 1";
-        mysqli_query($this->connection, $query);
-
-        $_SESSION["user_id"] = $row["user_id"];
-        $_SESSION["username"] = $username;
-        $_SESSION["email_address"] = $row["email"];
-        $success = true;
-      }
-    } else {
-      echo mysqli_error($this->connection);
+      $success = true;
     }
-    mysqli_close($this->connection);
 
     return $success;
   }
@@ -101,50 +113,67 @@ class DB {
     $password      = trim($password);
 
     if (!empty($email_address) && !empty($password)) {
-      // Values are stored escaped in the database
-      // Must double-escape for query to return a match with the escaped value
-      $email_address = mysqli_escape_string($this->connection, mysqli_escape_string($this->connection, $email_address));
-      $query = "SELECT status, user_id, username, password FROM users WHERE email='{$email_address}'";
+      $email_address = mysqli_escape_string($this->connection, $email_address);
 
-      $response = mysqli_query($this->connection, $query);
-      if ($response) {
-        if (mysqli_num_rows($response) > 0) {
-          $row = mysqli_fetch_array($response);
+      // Call the stored procedure to get the info needed for login
+      $results = $this->call("get_user_login_info", array("email_address" => "{$email_address}"));
+      if (is_array($results) && !empty($results)) {
 
-          require("../PBKDF2/password_hash.php");
-          if (PasswordStorage::verify_password($password, $row["password"])) {
-            if ($row["status"] == "unverified") {
-              $_SESSION["login_attempt"] = true;
-              Infra::redirect("pages/email_not_verified/email_not_verified.php");
-            } else {
-              $_SESSION["user_id"] = $row["user_id"];
-              $_SESSION["username"] = $row["username"];
-              $_SESSION["email_address"] = $email_address;
-              $success = true;
-            }
+        require("../PBKDF2/password_hash.php");
+        if (PasswordStorage::verify_password($password, $results["password"])) {
+          if ($results["status"] == "unverified") {
+            $_SESSION["login_attempt"] = true;
+            Infra::redirect("pages/email_not_verified/email_not_verified.php");
+          } else {
+            // Sign the user in
+            $_SESSION["user_id"] = $results["user_id"];
+            $_SESSION["username"] = $results["username"];
+            $_SESSION["email_address"] = $email_address;
+            $success = true;
           }
         }
-      } else {
-        echo mysqli_error($this->connection);
+
       }
-      mysqli_close($this->connection);
     }
     return $success;
   }
 
   public function call($procedure_name, $params) {
-    $query_string = "CALL {$procedure_name}(";
+    // Start the call to the procedure
+    $query_string = "CALL `{$procedure_name}`(";
+
+    // Add all the parameters to the procedure call
     foreach ($params as $key => $value) $query_string .= "'{$value}',";
 
-    // Replace the last comma with a closing bracket
+    // Replace the last character (a comma) with a closing bracket
     $query_string = substr_replace($query_string, ")", strlen($query_string) - 1);
 
     // Run the query and return the result(s)
-    $response = mysqli_query($this->connection, $query_string);
-    if ($response == TRUE || $response == FALSE) {
-      return $response;
-    } else if (mysqli_num_rows($response) > 0) {
-      return mysqli_fetch_array($response);
+    $response = mysqli_multi_query($this->connection, $query_string);
+
+    if ($response === false) {
+      return "ERROR: An error occured running the query: {$query_string}<br>" . mysqli_error($this->connection);
+    } else {
+      $all_results = array();
+      $errors = "";
+      do {
+        $results = mysqli_store_result($this->connection);
+
+        if ($results === false) {
+          if (mysqli_errno($this->connection) != 0) {
+            $errors .= mysqli_error($this->connection) . "\n";
+          }
+        } else {
+          $new_results = $results->fetch_assoc();
+          if (is_array($new_results)) {
+            $all_results = array_merge($all_results, $new_results);
+          }
+          $results->free();
+        }
+      } while (mysqli_more_results($this->connection) && mysqli_next_result($this->connection));
+
+      if ($errors != "") return $errors;
+      return $all_results;
     }
   }
 }

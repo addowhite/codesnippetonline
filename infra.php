@@ -29,12 +29,28 @@ class Infra {
   }
 
   public static function mail($address, $subject, $content) {
-    $headers = "Reply-To: \r\n" .
+    $headers = "From: no-reply@codesnippetonline.com\r\n" .
+               "Reply-To: no-reply@codesnippetonline.com\r\n" .
+               "Return-Path: no-reply@codesnippetonline.com\r\n" .
                "X-Mailer: PHP/" . phpversion() . "\r\n" .
                "MIME-Version: 1.0\r\n" .
                "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
     mail($address, $subject, $content, $headers);
+  }
+
+  public static function send_account_verification_email($username, $email_address, $verification_code) {
+    // URL escape the username so it can be used as a GET parameter
+    $escaped_username = rawurlencode($username);
+
+    Infra::mail(
+      $email_address,
+      "Account activation",
+      template("templates/email_account_activation.php", array(
+        "username" => "{$username}",
+        "activation_link" => "http://" . Infra::get_base_url() . "/processes/activate_account.php?user={$escaped_username}&code={$verification_code}"
+      ))
+    );
   }
 
 }
