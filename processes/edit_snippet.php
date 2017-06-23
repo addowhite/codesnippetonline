@@ -10,7 +10,7 @@ if (isset($_POST["submit"])) {
     "title"          => $_POST["title"],
     "content"        => $_POST["content"]
   ));
-} else {
-  Infra::redirect();
 }
+
+Infra::redirect();
 ?>

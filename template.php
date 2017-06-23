@@ -21,11 +21,27 @@ function template($template_path, $params) {
 
 function page($content_path, $params = NULL) {
   if ($params == NULL) $params = array();
-  return template("templates/basic_page.php", $params + array("content" => template($content_path, $params)));
+  return template(
+    "templates/basic_page.php",
+    $params + array("content" => template($content_path, $params))
+  );
 }
 
 function button($id, $value, $href) {
-  return template("templates/button.php", array("id" => $id, "value" => $value, "href" => $href));
+  return template("templates/button.php", array(
+    "id"    => $id,
+    "value" => $value,
+    "href"  => $href
+  ));
+}
+
+function snippet($title, $content, $language, $author) {
+  return template("templates/snippet.php", array(
+    "title"    => $title,
+    "content"  => $content,
+    "language" => $language,
+    "author"   => $author
+  ));
 }
 
 ?>

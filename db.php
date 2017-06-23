@@ -48,13 +48,15 @@ class DB {
       if (is_array($check_info_result)) {
         $errors = "";
 
+        $row = $check_info_result[0];
+
         // If the username is already taken
-        if (isset($check_info_result["username"]) && $check_info_result["username"] !== NULL) {
+        if ($row["username"] !== NULL) {
           $errors .= "Username \"{$username}\" is unavailable.<br>";
         }
 
         // If the email address is already taken
-        if (isset($check_info_result["email"]) && $check_info_result["email"] !== NULL) {
+        if ($check_info_result["email"] !== NULL) {
           $errors .= "There is already a user registered with the email address \"{$email_address}\".<br>";
         }
 
@@ -72,7 +74,7 @@ class DB {
           "verification_code" => "{$verification_code}"
         ));
 
-        if (is_array($create_user_result) && $create_user_result["row_count"] == "1") {
+        if (is_array($create_user_result) && count($create_user_result) == 1 && $create_user_result[0]["row_count"] == "1") {
           $result = "success";
           Infra::send_account_verification_email($username, $email_address, $verification_code);
         } else {
@@ -95,10 +97,11 @@ class DB {
 
     // If the verification code was valid
     if (is_array($result) && !empty($result)) {
+      $row = $result[0];
       // Sign the user in
-      $_SESSION["user_id"] = $result["user_id"];
+      $_SESSION["user_id"] = $row["user_id"];
       $_SESSION["username"] = $username;
-      $_SESSION["email_address"] = $result["email_address"];
+      $_SESSION["email_address"] = $row["email_address"];
 
       $success = true;
     }
@@ -119,15 +122,17 @@ class DB {
       $results = $this->call("get_user_login_info", array("email_address" => "{$email_address}"));
       if (is_array($results) && !empty($results)) {
 
+        $row = $results[0];
+
         require("../PBKDF2/password_hash.php");
-        if (PasswordStorage::verify_password($password, $results["password"])) {
-          if ($results["status"] == "unverified") {
+        if (PasswordStorage::verify_password($password, $row["password"])) {
+          if ($row["status"] == "unverified") {
             $_SESSION["login_attempt"] = true;
             Infra::redirect("pages/email_not_verified/email_not_verified.php");
           } else {
             // Sign the user in
-            $_SESSION["user_id"] = $results["user_id"];
-            $_SESSION["username"] = $results["username"];
+            $_SESSION["user_id"] = $row["user_id"];
+            $_SESSION["username"] = $row["username"];
             $_SESSION["email_address"] = $email_address;
             $success = true;
           }
@@ -164,9 +169,10 @@ class DB {
             $errors .= mysqli_error($this->connection) . "\n";
           }
         } else {
-          $new_results = $results->fetch_assoc();
-          if (is_array($new_results)) {
-            $all_results = array_merge($all_results, $new_results);
+          $new_row = $results->fetch_assoc();
+          while ($new_row != NULL) {
+            array_push($all_results, $new_row);
+            $new_row = $results->fetch_assoc();
           }
           $results->free();
         }
