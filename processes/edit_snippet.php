@@ -7,8 +7,8 @@ if (isset($_POST["submit"])) {
     "user_id"        => $_SESSION["user_id"],
     "language"       => $_POST["language"],
     "privacy_status" => $_POST["privacy"],
-    "title"          => $_POST["title"],
-    "content"        => $_POST["content"]
+    "title"          => Infra::html_escape($_POST["title"]),
+    "content"        => Infra::html_escape($_POST["content"])
   ));
 }
 

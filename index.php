@@ -12,7 +12,7 @@ $snippet_list = "";
 
 if (is_array($get_snippets_results) && !empty($get_snippets_results)) {
 	foreach ($get_snippets_results as $key => $value) {
-		$snippet_list .= snippet($value["title"], $value["content"], $value["language"], $value["username"]);
+		$snippet_list .= snippet($value["snippet_id"], $value["title"], $value["content"], $value["language"], $value["username"]);
 	}
 }
 

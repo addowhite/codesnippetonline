@@ -5,6 +5,33 @@ require "template.php";
 
 class Infra {
 
+  public static $cno_languages = NULL;
+  public static $ace_languages = NULL;
+
+  public static function init() {
+
+    self::$cno_languages = array(
+      "c++",
+      "c#",
+      "c",
+      "java",
+      "javascript",
+      "php",
+      "lua"
+    );
+
+    self::$ace_languages = array(
+      "c_cpp",
+      "csharp",
+      "c_cpp",
+      "java",
+      "javascript",
+      "php",
+      "lua"
+    );
+
+  }
+
   public static function check_user_logged_in() {
     return isset($_SESSION["user_id"]) && isset($_SESSION["username"]) && isset($_SESSION["email_address"]);
   }
@@ -53,6 +80,16 @@ class Infra {
     );
   }
 
+  public static function get_ace_language_name($cno_language_name) {
+    return self::$ace_languages[array_search($cno_language_name, self::$cno_languages)];
+  }
+
+  public static function html_escape($unescaped_string) {
+    return str_replace(">", "&gt;", str_replace("<", "&lt;", $unescaped_string));
+  }
+
 }
+
+Infra::init();
 
 ?>

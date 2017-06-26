@@ -35,12 +35,13 @@ function button($id, $value, $href) {
   ));
 }
 
-function snippet($title, $content, $language, $author) {
+function snippet($snippet_id, $title, $content, $language, $author) {
   return template("templates/snippet.php", array(
-    "title"    => $title,
-    "content"  => $content,
-    "language" => $language,
-    "author"   => $author
+    "snippet_id" => $snippet_id,
+    "title"      => $title,
+    "content"    => $content,
+    "language"   => $language,
+    "author"     => $author
   ));
 }
 
