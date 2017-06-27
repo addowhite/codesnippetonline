@@ -133,10 +133,16 @@ input {
   border-right: solid 1px #383838;
 }
 
+input, select, option {
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 12pt;
+  color: white;
+}
+
 form input[type="text"], input[type="password"] {
   width: 100%;
   width: Calc(100% - 19px);
-  padding: .3em .6em;
+  padding: .4em .6em;
   border: none;
   border-top: solid 1px #6600ff;
   background-color: #383838;
@@ -157,12 +163,12 @@ textarea {
 }
 
 select {
-  font-size: 10pt;
+  font-size: 12pt;
   background-color: #383838;
   border: none;
   padding: 6px .6em;
 }
 
 option {
-  font-size: 10pt;
+  font-size: 12pt;
 }

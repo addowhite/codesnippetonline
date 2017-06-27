@@ -5,12 +5,12 @@ require "template.php";
 
 class Infra {
 
-  public static $cno_languages = NULL;
+  public static $cso_languages = NULL;
   public static $ace_languages = NULL;
 
   public static function init() {
 
-    self::$cno_languages = array(
+    self::$cso_languages = array(
       "c++",
       "c#",
       "c",
@@ -80,8 +80,8 @@ class Infra {
     );
   }
 
-  public static function get_ace_language_name($cno_language_name) {
-    return self::$ace_languages[array_search($cno_language_name, self::$cno_languages)];
+  public static function get_ace_language_name($cso_language_name) {
+    return self::$ace_languages[array_search($cso_language_name, self::$cso_languages)];
   }
 
   public static function html_escape($unescaped_string) {
