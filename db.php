@@ -1,22 +1,25 @@
 <?php
 
-DEFINE("DB_USER", "1543834_login");
-DEFINE("DB_PASSWORD", "LITTLEfriend9895");
-DEFINE("DB_HOST", "pdb18.freehostingeu.com");
-DEFINE("DB_NAME", "1543834_login");
+require "private_db_info.php";
 
 $db = new DB();
 
 class DB {
-  protected $connection;
+  protected $pdo;
 
   public function __construct() {
-    $this->connection = @mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
-      OR die("Failed to connect to MySQL: " . mysqli_connect_error());
+    try {
+      $this->pdo = new PDO("mysql:dbname=" . DB_NAME . ";host=" . DB_HOST, DB_USER, DB_PASSWORD, array(
+        PDO::ATTR_PERSISTENT => TRUE,
+        PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION
+      ));
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
   }
 
   public function __destruct() {
-    mysqli_close($this->connection);
+    $pdo = null;
   }
 
   public function create_account($email_address, $username, $password, $password_confirm) {
@@ -36,9 +39,6 @@ class DB {
       require("../PBKDF2/password_hash.php");
       $password_hash = PasswordStorage::create_hash($password);
 
-      $email_address = mysqli_escape_string($this->connection, $email_address);
-      $username = mysqli_escape_string($this->connection, $username);
-
       // Execute the SQL stored proc to check the username and email aren't already in use
       $check_info_result = $this->call("check_user_account_info_valid", array(
         "email_address" => "{$email_address}",
@@ -56,7 +56,7 @@ class DB {
         }
 
         // If the email address is already taken
-        if ($check_info_result["email"] !== NULL) {
+        if ($row["email"] !== NULL) {
           $errors .= "There is already a user registered with the email address \"{$email_address}\".<br>";
         }
 
@@ -70,7 +70,7 @@ class DB {
         $create_user_result = $this->call("create_user", array(
           "email_address"     => "{$email_address}",
           "username"          => "{$username}",
-          "password"          => "{$password_hash}",
+          "user_password"     => "{$password_hash}",
           "verification_code" => "{$verification_code}"
         ));
 
@@ -78,7 +78,7 @@ class DB {
           $result = "success";
           Infra::send_account_verification_email($username, $email_address, $verification_code);
         } else {
-          return mysqli_error($this->connection);
+          return 'Something went wrong.';
         }
 
       } else if (is_string($check_info_result) && substr($check_info_result, 0, 5) == "ERROR") {
@@ -116,7 +116,6 @@ class DB {
     $password      = trim($password);
 
     if (!empty($email_address) && !empty($password)) {
-      $email_address = mysqli_escape_string($this->connection, $email_address);
 
       // Call the stored procedure to get the info needed for login
       $results = $this->call("get_user_login_info", array("email_address" => "{$email_address}"));
@@ -143,45 +142,53 @@ class DB {
     return $success;
   }
 
-  public function call($procedure_name, $params) {
+  public function call($procedure_name, $params, $return_results = true) {
     // Start the call to the procedure
     $query_string = "CALL `{$procedure_name}`(";
 
     // Add all the parameters to the procedure call
-    foreach ($params as $key => $value) $query_string .= "'{$value}',";
+    foreach ($params as $key => $value) $query_string .= ":{$key},";
 
     // Replace the last character (a comma) with a closing bracket
     $query_string = substr_replace($query_string, ")", strlen($query_string) - 1);
 
-    // Run the query and return the result(s)
-    $response = mysqli_multi_query($this->connection, $query_string);
-
-    if ($response === false) {
-      return "ERROR: An error occured running the query: {$query_string}<br>" . mysqli_error($this->connection);
-    } else {
-      $all_results = array();
-      $errors = "";
-      do {
-        $results = mysqli_store_result($this->connection);
-
-        if ($results === false) {
-          if (mysqli_errno($this->connection) != 0) {
-            $errors .= mysqli_error($this->connection) . "\n";
-          }
-        } else {
-          $new_row = $results->fetch_assoc();
-          while ($new_row != NULL) {
-            array_push($all_results, $new_row);
-            $new_row = $results->fetch_assoc();
-          }
-          $results->free();
-        }
-      } while (mysqli_more_results($this->connection) && mysqli_next_result($this->connection));
-
-      if ($errors != "") return $errors;
-      return $all_results;
+    try {
+      // Prepare the sql statement
+      $statement = $this->pdo->prepare($query_string);
+    } catch (PDOException $e) {
+      echo "Exception preparing database query statement: " . $e->getMessage();
+      exit();
     }
+
+    // Bind all the parameter values to the identifiers in the sql query (this is sql injection safe)
+    foreach ($params as $key => &$value) {
+      $statement->bindParam(":{$key}", $value);
+    }
+
+    try {
+      // Execute the prepared database query statement
+      $statement->execute();
+    } catch (PDOException $e) {
+      echo "Exception executing prepared statement: " . $e->getMessage();
+      exit();
+    }
+
+    // If this call to the stored proc should return a table of results
+    // and there are some results to return
+    if ($return_results && $statement->rowCount() > 0) {
+      try {
+        // Return all the results from the query as a 2D array
+        return $statement->fetchAll();
+      } catch (PDOException $e) {
+        echo "Exception fetching results from database: " . $e->getMessage();
+        exit();
+      }
+    }
+
+    // Return that the query was completed successfully
+    return true;
   }
+
 }
 
 ?>
