@@ -46,6 +46,7 @@ input {
 
 .header-container {
   height: 50px;
+  text-align: center;
 }
 
 .header-container, .footer-container {
@@ -121,8 +122,9 @@ input {
   display: inline-block;
   font-size: 18pt;
   height: 100%;
-  padding-top: 9px;
   padding-left: .5em;
+  transform: translate(0px, 10px);
+  float: left;
 }
 
 .button-container {
@@ -137,6 +139,8 @@ input, select, option {
   font-family: "Helvetica", "Arial", sans-serif;
   font-size: 12pt;
   color: white;
+  background-color: #383838;
+  border: none;
 }
 
 form input[type="text"], input[type="password"] {
@@ -145,7 +149,6 @@ form input[type="text"], input[type="password"] {
   padding: .4em .6em;
   border: none;
   border-top: solid 1px #6600ff;
-  background-color: #383838;
 }
 
 form input[type="text"].top, input[type="password"].top {

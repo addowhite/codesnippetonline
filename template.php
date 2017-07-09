@@ -28,7 +28,7 @@ function get_file_contents($file_path) {
  * @param array $params An associative array of template parameters and their values
  * @return string The contents of the template with all the template parameters filled in
  */
-function template($template_path, $params) {
+function template($template_path, $params = array()) {
   // Create all the parameters as local variables in their own right
   if ($params != NULL) extract($params);
 

@@ -12,7 +12,7 @@
 		<div class="header-container">
 			<div class="title-container">CodeSnippetOnline</div>
 			<div class="button-container">
-				<?=Infra::check_user_logged_in()
+				<?=$search?><?=Infra::check_user_logged_in()
 					? button("button-create-account", "New snippet", "/pages/snippet/snippet.php") . button("button-logout", "Sign out", "/processes/logout_user.php")
 					: button("button-login", "Sign in", "/pages/login/login.php") . button("button-create-account", "Sign up", "/pages/create_account/create_account.php")?>
 			</div>

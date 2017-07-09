@@ -205,6 +205,28 @@ class DB {
   }
 
   /**
+   * Search for snippets in the database
+   * @param int $user_id The id of the user who wrote the snippet you're searching for, or null if you don't know
+   * @param string $cso_langauge The CodeSnippetOnline name of the programming language of the snippet you're searching for, or null if you don't know
+   * @param string $privacy_status The privacy status of the snippet you're searching for, or null if you don't know
+   * @param string $title The title (or part thereof) of the snippet you're searching for, or null if you don't know
+   * @return array A 2d array of snippet data matching the search filters
+   */
+  public function search_snippets($user_id, $cso_language, $privacy_status, $title) {
+    if (is_null($user_id)       ) $user_id        = '-1';
+    if (is_null($cso_language)  ) $cso_language   = '-1';
+    if (is_null($privacy_status)) $privacy_status = '-1';
+    if (is_null($title)         ) $title          = '-1';
+
+    return $this->call('get_snippet_list', array(
+      'user_id'          => "{$user_id}",
+      'snippet_language' => "{$cso_language}",
+      'privacy_status'   => "{$privacy_status}",
+      'snippet_title'    => "{$title}"
+    ));
+  }
+
+  /**
    * Call a MYSQL stored procedure
    * @param string $procedure_name The name of the stored procedure to invoke
    * @param array $params An array of parameters to be passed to the stored procedure

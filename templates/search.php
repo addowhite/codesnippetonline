@@ -1,0 +1,1 @@
+<form class="snippet-search-form"><input id="snippet_search" class="snippet-search" type="text" placeholder="Search" name="q" /></form>
