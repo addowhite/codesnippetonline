@@ -12,5 +12,6 @@
 	  editor.getSession().setMode("ace/mode/<?=Infra::get_ace_language_name($language)?>");
 		editor.setReadOnly(true);
 		editor.renderer.setShowGutter(false);
+		editor.setShowPrintMargin(false);
 	});
 </script>
