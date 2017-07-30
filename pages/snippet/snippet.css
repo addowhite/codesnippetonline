@@ -1,32 +1,30 @@
+.content {
+  grid-template-columns: 1fr !important;
+}
+
 #hidden_textarea {
-  display: none;
+    display: none;
 }
 
 #editor {
-  width: Calc(100% - 1px);
-  height: 400px;
-  font-family: monospace;
-  font-size: 10pt;
-  border-top: solid 1px #6600ff !important;
-  position: relative;
-  z-index: 1;
+    min-height: 30em;
+}
+
+#edit_post_form table {
+    table-layout: fixed;
+    padding: 0 2em;
 }
 
 .post_title {
-  display: inline-block;
-  width: Calc(100% - 234px) !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
 }
 
-.language-dropdown {
-  width: 114px;
-  top: 1px;
-  position: relative;
-  z-index: 0;
+.ace-monokai, .ace-monokai .ace_gutter {
+  background-color: #383838 !important;
 }
 
-.privacy-dropdown {
-  width: 100px;
-  top: 1px;
-  position: relative;
-  z-index: 0;
+/* We don't need the scrollbar because we auto-resize the editor to fit the content */
+.ace_scrollbar-v {
+    display: none !important;
 }

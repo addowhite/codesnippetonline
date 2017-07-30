@@ -1,5 +1,4 @@
-form {
-  max-width: 26em;
-  margin-left: auto;
-  margin-right: auto;
+.content {
+  grid-template-columns: 1fr !important;
+  max-width: 30em;
 }

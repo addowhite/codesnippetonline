@@ -1,66 +1,53 @@
-.ace_cursor {
-	color: transparent !important;
+.snippet-title-table {
+  width: 100%;
 }
 
-.snippet_container {
-	display: inline-block;
-	position: relative;
-	width: Calc(50% - 2.2em);
-	margin: 1em;
-	margin-bottom: 2em;
-	background-color: #393939;
+.snippet-language,.snippet-author {
+  text-align: right;
+  font-style: italic;
+  color: #888;
 }
 
-.snippet_title {
-	display: inline-block;
-	margin: 0;
-	padding: .5em 1em;
-  min-height: 14px;
+.snippet-language {
+  padding-left: 0 !important;
 }
 
-.snippet_content {
-	height: 10em;
-	border-top: 4px solid #6600ff;
+.snippet-search input[type="submit"] {
+  display: none;
 }
 
-.snippet_author {
-	margin: 0;
-	padding: .25em;
-	padding-right: .5em;
-	text-align: right;
-	color: #A0A0A0;
-	font-style: italic;
-	background-color: #303030;
+.card.snippet-search {
+  grid-column: 1 / span 2;
+  width: Calc(100% - 2em);
+  max-width: 60em;
+  margin: auto;
+  padding: 0;
 }
 
-.snippet_language {
-	float: right;
-	margin: 0;
-	color: #A0A0A0;
-	font-style: italic;
-	padding: .5em;
-	display: inline-block;
+.snippet-search .fa-search {
+  position: absolute;
+  padding: .85em;
+  font-size: 1.5em;
+  color: #888;
 }
 
-.snippet_editor {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
+.snippet-content {
+  margin: 0 2em 1em 2em;
 }
 
-.snippet-search {
-  border: none !important;
-  padding: 0 .5em;
-  height: Calc(100% - 0.8em);
-}
-
-.snippet-search-form {
-	display: inline-block;
-	width: 200px;
-	height: 100%;
-	padding: 0;
+#snippet_search {
   margin: 0;
-  vertical-align: top;
+  padding: 1.5em;
+  padding-left: 3.5em;
+
+  /* Fix browsers that don't support CssGrid */
+  width: Calc(100% - 5em);
+}
+
+.ace-monokai {
+  background-color: #383838 !important;
+}
+
+.ace_marker-layer,.ace_cursor-layer {
+  display: none;
 }

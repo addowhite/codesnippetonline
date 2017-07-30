@@ -1,9 +1,14 @@
-<div class="snippet_container">
-	<p class="snippet_title"><?=$title?></p><p class="snippet_language"><?=$language?></p>
-	<div class="snippet_content">
-		<div class="snippet_editor" id="editor_<?=$snippet_id?>"><?=$content?></div>
+<div class="card snippet-container">
+	<table class="snippet-title-table">
+		<tr>
+			<td><p class="title snippet-title"><?=$title?></p></td>
+			<td><p class="snippet-language"><?=$language?></p></td>
+		</tr>
+	</table>
+	<div class="snippet-content">
+		<div class="snippet-editor" id="editor_<?=$snippet_id?>"><?=$content?></div>
 	</div>
-	<p class="snippet_author">by <?=$author?></p>
+	<p class="snippet-author">by <?=$author?></p>
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -13,5 +18,6 @@
 		editor.setReadOnly(true);
 		editor.renderer.setShowGutter(false);
 		editor.setShowPrintMargin(false);
+		editor.setOption("maxLines", 20);
 	});
 </script>

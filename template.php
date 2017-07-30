@@ -69,11 +69,12 @@ function page($content_path, $params = NULL) {
  * @param string $href The target url of the button (the destination for when it is clicked)
  * @return string A string containing the markup for a single button
  */
-function button($id, $value, $href) {
+function button($id, $value, $href, $align = 'right') {
   return template("templates/button.php", array(
     "id"    => $id,
     "value" => $value,
-    "href"  => $href
+    "href"  => $href,
+    "align" => $align
   ));
 }
 

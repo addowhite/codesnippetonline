@@ -12,10 +12,8 @@ if (is_array($snippets_results) && !empty($snippets_results)) {
 	}
 }
 
-// Add a searchbar to the normal page template
 echo page("pages/index/content.php", array(
 	"head"         => '<link rel="stylesheet" type="text/css" href="pages/index/index.css">',
-	"snippet_list" => $snippet_list,
-	"search"       => template('templates/search.php')
+	"snippet_list" => $snippet_list
 ));
 ?>

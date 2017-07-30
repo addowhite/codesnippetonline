@@ -1,3 +1,3 @@
-<form class="button-wrapper right" action="<?=$href?>" method="post">
-  <input id="<?=$id?>" class="button" type="submit" name="submit" value="<?=$value?>">
-</form>
+<a class="button <?=$align?>" id="<?=$id?>" href="<?=$href?>">
+	<p><?=$value?></p>
+</a>
