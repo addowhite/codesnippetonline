@@ -8,7 +8,10 @@
 	<div class="snippet-content">
 		<div class="snippet-editor" id="editor_<?=$snippet_id?>"><?=$content?></div>
 	</div>
-	<p class="snippet-author">by <?=$author?></p>
+	<div class="button-container">
+		<?=button("view_snippet_button", "View", "pages/snippet/snippet.php?id=$snippet_id", "left")?>
+		<p class="snippet-author">by <?=$author?></p>
+	</div>
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function() {

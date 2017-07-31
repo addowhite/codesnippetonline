@@ -3,12 +3,12 @@
     <table>
       <tr>
         <td>
-          <input class="post_title" type="text" name="title" placeholder="Title" value="<?=$post_title?>">
+          <input class="post_title" type="text" name="title" placeholder="Title" value="<?=$snippet_title?>">
         </td>
         <td class="dropdown-container">
-          <select class="privacy-dropdown" name="privacy">
-          <option value="public">Public</option>
-          <option value="private">Private</option>
+          <select id="privacy_dropdown" class="privacy-dropdown" name="privacy">
+            <option value="public">Public</option>
+            <option value="private">Private</option>
           </select>
         </td>
         <td class="dropdown-container">
@@ -26,12 +26,15 @@
     </table>
       
     <textarea id="hidden_textarea" name="content"></textarea>
-    <div id="editor"></div>
+    <div id="editor"><?=$snippet_content?></div>
 
   </form>
-  <div class="button-container">
-    <input form="edit_post_form" class="button right" type="submit" name="submit" value="<?=$save_button_text?>">
-  </div>
+  
+  <?php
+    if ($allow_edit)
+      echo "<div class=\"button-container\"><input form=\"edit_post_form\" class=\"button right\" type=\"submit\" name=\"submit\" value=\"$save_button_text\"></div>";
+  ?>
+  
 </div>
 <script src="../../ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
@@ -55,13 +58,28 @@ function onPageLoad() {
   editor.setShowPrintMargin(false);
   editor.on("input", updateEditorHeight);
 
-  // Update the syntax highlighting when the user selects a langauge from the dropdown
+  <?php
+  if (!$allow_edit) {
+    echo 'editor.setReadOnly(true);
+          document.getElementById("privacy_dropdown").disabled = true;
+          document.getElementById("language_dropdown").disabled = true;';
+  }
+  ?>
+
+  // Set the value of the dropdown to the privacy status of the snippet
+  document.getElementById("privacy_dropdown").value = "<?=$snippet_privacy_status?>";
+
+  // Set the value of the dropdown to the programming language of the snippet
+  document.getElementById("language_dropdown").value = "<?=$snippet_language?>";
+
+  // Update the syntax highlighting when the user selects a language from the dropdown
   document.getElementById("language_dropdown").addEventListener("change", updateEditorLanguage);
 
   // Update the value of the hidden textarea when the user submits the form
   document.getElementById("edit_post_form").addEventListener("submit", updateHiddenTextareaValue);
 
-  // When the page first loads, set the language syntax highlighting and ensure the hidden textarea mirrors the Ace Editor
+  // When the page first loads, set the language syntax highlighting
+  // and ensure the hidden textarea mirrors the Ace Editor
   updateEditorLanguage();
   updateHiddenTextareaValue();
 }

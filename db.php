@@ -206,24 +206,43 @@ class DB {
 
   /**
    * Search for snippets in the database
+   * @param int $snippet_id The id of the snippet you're searching for, or null if you don't know
    * @param int $user_id The id of the user who wrote the snippet you're searching for, or null if you don't know
    * @param string $cso_langauge The CodeSnippetOnline name of the programming language of the snippet you're searching for, or null if you don't know
    * @param string $privacy_status The privacy status of the snippet you're searching for, or null if you don't know
    * @param string $title The title (or part thereof) of the snippet you're searching for, or null if you don't know
    * @return array A 2d array of snippet data matching the search filters
    */
-  public function search_snippets($user_id, $cso_language, $privacy_status, $title) {
+  public function search_snippets($snippet_id, $user_id, $cso_language, $privacy_status, $title) {
+    if (is_null($snippet_id)    ) $snippet_id     = '-1';
     if (is_null($user_id)       ) $user_id        = '-1';
     if (is_null($cso_language)  ) $cso_language   = '-1';
     if (is_null($privacy_status)) $privacy_status = '-1';
     if (is_null($title)         ) $title          = '-1';
 
     return $this->call('get_snippet_list', array(
+      'snippet_id'       => "{$snippet_id}",
       'user_id'          => "{$user_id}",
       'snippet_language' => "{$cso_language}",
       'privacy_status'   => "{$privacy_status}",
       'snippet_title'    => "{$title}"
     ));
+  }
+
+  /**
+   * Get the details of the snippet with the specified id
+   * Uses the session variable 'user_id' to ensure that users can view only the private snippets that belong to them
+   * @param int $snippet_id The id of the snippet
+   * @return array A 1d array of data for the specified snippet
+   */
+  public function get_snippet_info($snippet_id) {
+    // Get the id of the currently signed in user, or -1 if not signed in
+    $session_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : -1;
+
+    return $this->call('get_snippet_info', array(
+      'snippet_id'      => "{$snippet_id}",
+      'session_user_id' => "{$session_user_id}"
+    ))[0];
   }
 
   /**

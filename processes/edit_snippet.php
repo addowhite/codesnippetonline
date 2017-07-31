@@ -1,7 +1,7 @@
 <?php
 include "../infra.php";
 
-if (isset($_POST["submit"])) {
+if (isset($_POST["submit"]) && Infra::check_user_logged_in()) {
   $db->call("edit_snippet", array(
     "snippet_id"       => $_SESSION["snippet_id"],
     "user_id"          => $_SESSION["user_id"],

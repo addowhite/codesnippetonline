@@ -6,6 +6,7 @@
   text-align: right;
   font-style: italic;
   color: #888;
+  padding: 1.5em !important;
 }
 
 .snippet-language {
@@ -33,6 +34,11 @@
 
 .snippet-content {
   margin: 0 2em 1em 2em;
+  height: Calc(100% - 9.3em);
+}
+
+.ace_editor {
+  min-height: 100% !important;
 }
 
 #snippet_search {
