@@ -67,10 +67,10 @@ function onPageLoad() {
   ?>
 
   // Set the value of the dropdown to the privacy status of the snippet
-  document.getElementById("privacy_dropdown").value = "<?=$snippet_privacy_status?>";
+  document.getElementById("privacy_dropdown").value = "<?=$snippet_privacy_status?>" || "public";
 
   // Set the value of the dropdown to the programming language of the snippet
-  document.getElementById("language_dropdown").value = "<?=$snippet_language?>";
+  document.getElementById("language_dropdown").value = "<?=$snippet_language?>" || "javascript";
 
   // Update the syntax highlighting when the user selects a language from the dropdown
   document.getElementById("language_dropdown").addEventListener("change", updateEditorLanguage);

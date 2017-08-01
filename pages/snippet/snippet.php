@@ -23,6 +23,8 @@ if (isset($_GET["id"]) && $_GET["id"] != -1) {
     exit;
   }
 
+  $allow_edit = true;
+
   $save_button_text = "Post";
   $_SESSION["snippet_id"] = -1;
 }
