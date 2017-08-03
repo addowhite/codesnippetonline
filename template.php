@@ -62,6 +62,11 @@ function page($content_path, $params = NULL) {
   );
 }
 
+/**
+ * Build a standard page containing a card which displays a message
+ * @param string $error_message The message to display on the page
+ * @return string The processed 'error_page' template with a card containing the text from $error_message
+ */
 function error_page($error_message) {
   return page('templates/error_page.php', array('error_message' => "{$error_message}"));
 }
