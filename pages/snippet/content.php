@@ -18,6 +18,7 @@
             <option value="c">C</option>
             <option value="java">Java</option>
             <option value="javascript">Javascript</option>
+            <option value="python">Python</option>
             <option value="php">PHP</option>
             <option value="lua">LUA</option>
           </select>
@@ -47,6 +48,7 @@ var languages = {
   "c"          : "c_cpp",
   "java"       : "java",
   "javascript" : "javascript",
+  "python"     : "python",
   "php"        : "php",
   "lua"        : "lua"
 };

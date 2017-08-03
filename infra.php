@@ -30,6 +30,7 @@ class Infra {
       "c",
       "java",
       "javascript",
+      "python",
       "php",
       "lua"
     );
@@ -41,6 +42,7 @@ class Infra {
       "c_cpp",
       "java",
       "javascript",
+      "python",
       "php",
       "lua"
     );
