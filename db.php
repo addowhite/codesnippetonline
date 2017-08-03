@@ -132,22 +132,28 @@ class DB {
     // Call the stored procedure to activate the account
     $result = $this->call("activate_account", array("username" => "{$username}", "verification_code" => "{$verification_code}"));
 
+    $error = 'There was a problem activating this account: The activation link was invalid.';
+
     // If the verification code was valid, the query should return the username and email address
     if (is_array($result) && !empty($result)) {
       // Get the first row of data
       $row = $result[0];
 
-      // Sign the user in
-      $_SESSION["user_id"] = $row["user_id"];
-      $_SESSION["username"] = $username;
-      $_SESSION["email_address"] = $row["email_address"];
+      $error = $row['error'];
 
-      // Return that the account was successfully activated
-      return true;
+      if ($error == 'success') {
+        // Sign the user in
+        $_SESSION['user_id'] = $row['user_id'];
+        $_SESSION['username'] = $username;
+        $_SESSION['email_address'] = $row['email_address'];
+      } else if ($error == 'expired') {
+        $error = 'There was a problem activating this account: The activation link has expired.';
+      }
+      
     }
 
-    // Return failure if the verification code was invalid
-    return false;
+    // Return what went wrong, if anything
+    return $error;
   }
 
   /**

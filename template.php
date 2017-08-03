@@ -62,6 +62,10 @@ function page($content_path, $params = NULL) {
   );
 }
 
+function error_page($error_message) {
+  return page('templates/error_page.php', array('error_message' => "{$error_message}"));
+}
+
 /**
  * Build a standard button using the button template
  * @param string $id The id to use for the html element
