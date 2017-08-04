@@ -31,8 +31,9 @@ class Infra {
       "java",
       "javascript",
       "python",
+      "lua",
       "php",
-      "lua"
+      "html"
     );
 
     // Create the array of AceEditor programming language names
@@ -43,8 +44,9 @@ class Infra {
       "java",
       "javascript",
       "python",
+      "lua",
       "php",
-      "lua"
+      "html"
     );
 
   }

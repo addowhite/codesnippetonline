@@ -19,8 +19,9 @@
             <option value="java">Java</option>
             <option value="javascript">Javascript</option>
             <option value="python">Python</option>
-            <option value="php">PHP</option>
             <option value="lua">LUA</option>
+            <option value="php">PHP</option>
+            <option value="html">HTML</option>
           </select>
         </td>
       </tr>
@@ -49,8 +50,9 @@ var languages = {
   "java"       : "java",
   "javascript" : "javascript",
   "python"     : "python",
+  "lua"        : "lua",
   "php"        : "php",
-  "lua"        : "lua"
+  "html"       : "html"
 };
 
 function onPageLoad() {
