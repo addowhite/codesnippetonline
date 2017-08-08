@@ -57,3 +57,7 @@
 .ace_marker-layer,.ace_cursor-layer {
   display: none;
 }
+
+.card .button-container .button {
+  padding-right: 0;
+}

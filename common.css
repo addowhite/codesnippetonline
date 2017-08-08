@@ -167,8 +167,14 @@ td.dropdown-container {
 }
 
 .button p {
+  display: inline;
   margin: 0;
   padding: 0;
+}
+
+.button .count {
+  margin-left: 5px;
+  font-weight: normal;
 }
 
 .button-container {
