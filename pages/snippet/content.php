@@ -86,6 +86,7 @@ function onPageLoad() {
   // and ensure the hidden textarea mirrors the Ace Editor
   updateEditorLanguage();
   updateHiddenTextareaValue();
+  updateEditorHeight();
 }
 
 function updateEditorLanguage() {
