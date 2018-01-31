@@ -96,15 +96,16 @@ function button($id, $value, $href, $align = 'right') {
  * @param string The chosen display name of the user that wrote the snippet
  * @return string A string containing the markup for a single snippet
  */
-function snippet($snippet_id, $title, $content, $language, $author, $like_count, $dislike_count) {
+function snippet($snippet_id, $title, $content, $language, $author, $privacy_status, $like_count, $dislike_count) {
   return template("templates/snippet.php", array(
-    "snippet_id"    => $snippet_id,
-    "title"         => $title,
-    "content"       => $content,
-    "language"      => $language,
-    "author"        => $author,
-    "like_count"    => $like_count,
-    "dislike_count" => $dislike_count
+    "snippet_id"     => $snippet_id,
+    "title"          => $title,
+    "content"        => $content,
+    "language"       => $language,
+    "author"         => $author,
+    "privacy_status" => $privacy_status,
+    "like_count"     => $like_count,
+    "dislike_count"  => $dislike_count
   ));
 }
 

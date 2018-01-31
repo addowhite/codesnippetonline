@@ -152,6 +152,7 @@ td.dropdown-container {
   padding: 1em 3em;
   margin: 0;
   margin-bottom: 1em;
+  text-align: center;
 }
 
 .button {
@@ -238,6 +239,9 @@ td.dropdown-container {
 
 @media (min-width: 1300px) {
   .content {
+    max-width: 90em;
+  }
+  .header {
     max-width: 90em;
   }
 }

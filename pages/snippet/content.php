@@ -28,19 +28,23 @@
     </table>
       
     <textarea id="hidden_textarea" name="content"></textarea>
-    <div id="editor"><?=$snippet_content?></div>
+    <div id="editor" style="visibility: hidden;"><?=$snippet_content?></div>
 
   </form>
   
-  <?php
-    if ($allow_edit)
-      echo "<div class=\"button-container\"><input form=\"edit_post_form\" class=\"button right\" type=\"submit\" name=\"submit\" value=\"$save_button_text\"></div>";
-  ?>
+  <div class="button-container">
+    <?php
+      if ($snippet_language == "javascript")
+        echo "<input id=\"format_code\" class=\"button left\" type=\"button\" value=\"Format\">";
+      if ($allow_edit)
+        echo "<input form=\"edit_post_form\" class=\"button right\" type=\"submit\" name=\"submit\" value=\"$save_button_text\">";
+    ?>
+  </div>
   
 </div>
 <script src="../../ace/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-
+<script src="../../beautify.js" type="text/javascript" charset="utf-8"></script>
+<script>  
 var editor;
 
 var languages = {
@@ -82,6 +86,8 @@ function onPageLoad() {
   // Update the value of the hidden textarea when the user submits the form
   document.getElementById("edit_post_form").addEventListener("submit", updateHiddenTextareaValue);
 
+  document.getElementById("editor").style.visibility = "visible";
+  
   // When the page first loads, set the language syntax highlighting
   // and ensure the hidden textarea mirrors the Ace Editor
   updateEditorLanguage();
@@ -100,6 +106,13 @@ function updateHiddenTextareaValue() {
 function updateEditorHeight() {
   document.getElementById("editor").style.height = String((editor.getSession().getScreenLength() + 2) * editor.renderer.lineHeight) + "px";
   editor.resize();
+}
+  
+var formatButton = document.getElementById("format_code");
+if (formatButton) {
+  formatButton.addEventListener("click", function() {
+    editor.session.setValue(js_beautify(editor.session.getValue()));
+  });
 }
 
 document.addEventListener("DOMContentLoaded", onPageLoad);

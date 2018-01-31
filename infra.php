@@ -50,6 +50,14 @@ class Infra {
     );
 
   }
+  
+  /**
+   * Get's the ID of the currently signed-in user.
+   * @return String The ID of the signed-in user.
+   */
+  public static function get_user_id() {
+    return $_SESSION["user_id"];
+  }
 
   /**
    * Check if a user is logged in.

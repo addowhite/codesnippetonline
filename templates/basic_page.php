@@ -19,10 +19,15 @@
 					</tr>
 					<tr>
 						<td class="logo-container"><a class="logo" href="<?='http://' . Infra::get_base_url()?>">CodeSnippetOnline</a></td>
-						<td class="button-container"><?=Infra::check_user_logged_in()
-									? button("button_logout", "Sign out", "/processes/logout_user.php") . button("button_logout", "New snippet", "/pages/snippet/snippet.php")
-									: button("button_login", "Sign in", "/pages/login/login.php")
-						?></td>
+						<td class="button-container">
+							<?=Infra::check_user_logged_in()
+								? button("button_logout", "Sign out", "/processes/logout_user.php")
+									. button("button_new_snippet", "Public Snippets", "http://" . Infra::get_base_url())
+									. button("button_my_snippets", "My Snippets", "/pages/my_snippets/my_snippets.php")
+									. button("button_new_snippet", "Create snippet", "/pages/snippet/snippet.php")
+								: button("button_login", "Sign in", "/pages/login/login.php")
+							?>
+						</td>
 					</tr>
 				</table>
 			</div>

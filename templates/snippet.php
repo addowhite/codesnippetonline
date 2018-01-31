@@ -9,10 +9,14 @@
 		<div class="snippet-editor" id="editor_<?=$snippet_id?>"><?=$content?></div>
 	</div>
 	<div class="button-container">
-		<?=button("like_snippet_button_$snippet_id"   , "<i class=\"fa fa-thumbs-o-up\"   aria-hidden=\"true\"></i><p id=\"like_snippet_count_$snippet_id\" class=\"count\">$like_count</p>", "processes/like_snippet.php?id=$snippet_id"   , "left")?>
-		<?=button("dislike_snippet_button_$snippet_id", "<i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i><p id=\"dislike_snippet_count_$snippet_id\" class=\"count\">$dislike_count</p>", "processes/dislike_snippet.php?id=$snippet_id", "left")?>
-		<?=button("view_snippet_button_$snippet_id"   , '<i class="fa fa-expand"          aria-hidden="true"></i>', "pages/snippet/snippet.php?id=$snippet_id"    , "left")?>
-		<p class="snippet-author">by <?=$author?></p>
+		<?php
+			if ($privacy_status == "public") {
+				echo button("like_snippet_button_$snippet_id"   , "<i class=\"fa fa-thumbs-o-up\"   aria-hidden=\"true\"></i><p id=\"like_snippet_count_$snippet_id\" class=\"count\">$like_count</p>", "http://" . Infra::get_base_url() . "/processes/like_snippet.php?id=$snippet_id"   , "left");
+				echo button("dislike_snippet_button_$snippet_id", "<i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i><p id=\"dislike_snippet_count_$snippet_id\" class=\"count\">$dislike_count</p>", "http://" . Infra::get_base_url() . "/processes/dislike_snippet.php?id=$snippet_id", "left");
+			}
+		?>
+		<?=button("view_snippet_button_$snippet_id", '<i class="fa fa-expand" aria-hidden="true"></i>', "http://" . Infra::get_base_url() . "/pages/snippet/snippet.php?id=$snippet_id", "left")?>
+		<p class="snippet-author"><?=$author?></p>
 	</div>
 </div>
 <script>
@@ -24,7 +28,9 @@
 		editor.renderer.setShowGutter(false);
 		editor.setShowPrintMargin(false);
 		editor.setOption("maxLines", 20);
-		addLikeButtonCallback("like"   , "<?=$snippet_id?>");
-		addLikeButtonCallback("dislike", "<?=$snippet_id?>");
+		if ("$privacy_status" == "public") {
+			addLikeButtonCallback("like"   , "<?=$snippet_id?>");
+			addLikeButtonCallback("dislike", "<?=$snippet_id?>");
+		}
 	});
 </script>
