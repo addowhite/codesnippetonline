@@ -35,11 +35,13 @@
 
 p.snippet-title {
   padding: 2em;
+  padding-top: 0;
 }
 
 .snippet-content {
   margin: 0 2em 1em 2em;
-  height: Calc(100% - 10.3em);
+  /* height: Calc(100% - 10.3em); */
+  height: 15em;
 }
 
 .ace_editor {
