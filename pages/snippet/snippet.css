@@ -28,3 +28,7 @@
 .ace_scrollbar-v {
     display: none !important;
 }
+
+.card-edit-snippet {
+  padding-top: 2em;
+}

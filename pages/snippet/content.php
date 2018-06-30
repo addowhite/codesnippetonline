@@ -1,5 +1,5 @@
-<div class="card">
-  <form id="edit_post_form" action="/processes/edit_snippet.php" method="post">
+<div class="card card-edit-snippet">
+  <form id="edit_post_form" action="/processes/edit_snippet.php" method="post" style="visibility: hidden;">
     <table>
       <tr>
         <td>
@@ -28,13 +28,13 @@
     </table>
       
     <textarea id="hidden_textarea" name="content"></textarea>
-    <div id="editor" style="visibility: hidden;"><?=$snippet_content?></div>
+    <div id="editor"><?=$snippet_content?></div>
 
   </form>
   
   <div class="button-container">
     <?php
-      if ($snippet_language == "javascript")
+      if ($allow_edit && $snippet_language == "javascript")
         echo "<input id=\"format_code\" class=\"button left\" type=\"button\" value=\"Format\">";
       if ($allow_edit)
         echo "<input form=\"edit_post_form\" class=\"button right\" type=\"submit\" name=\"submit\" value=\"$save_button_text\">";
@@ -45,8 +45,6 @@
 <script src="../../ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../beautify.js" type="text/javascript" charset="utf-8"></script>
 <script>  
-var editor;
-
 var languages = {
   "c++"        : "c_cpp",
   "c#"         : "csharp",
@@ -58,14 +56,16 @@ var languages = {
   "php"        : "php",
   "html"       : "html"
 };
-
+  
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/monokai");
+editor.getSession().setMode("ace/mode/javascript");
+editor.setShowPrintMargin(false);
+editor.on("input", updateEditorHeight);
+editor.$blockScrolling = Infinity;
+  
 function onPageLoad() {
-  editor = ace.edit("editor");
-  editor.setTheme("ace/theme/monokai");
-  editor.getSession().setMode("ace/mode/javascript");
-  editor.setShowPrintMargin(false);
-  editor.on("input", updateEditorHeight);
-
+  
   <?php
   if (!$allow_edit) {
     echo 'editor.setReadOnly(true);
@@ -86,7 +86,7 @@ function onPageLoad() {
   // Update the value of the hidden textarea when the user submits the form
   document.getElementById("edit_post_form").addEventListener("submit", updateHiddenTextareaValue);
 
-  document.getElementById("editor").style.visibility = "visible";
+  document.getElementById("edit_post_form").style.visibility = "visible";
   
   // When the page first loads, set the language syntax highlighting
   // and ensure the hidden textarea mirrors the Ace Editor
